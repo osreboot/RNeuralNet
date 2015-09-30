@@ -17,16 +17,23 @@ public class Main extends HvlTemplateInteg2D{
 
 	public static final int IDX_FONT = 0, IDX_ENTITY = 1;
 	
+	public static Simulation sim;
+	
 	@Override
 	public void initialize(){
 		getTextureLoader().loadResource("Font");
 		getTextureLoader().loadResource("Entity");
 		
 		HvlCamera.setAlignment(HvlCameraAlignment.CENTER);
+		
+		sim = new SimulationBasic();
+		
+		sim.initialize();
 	}
 
 	@Override
 	public void update(float delta){
+		sim.update(delta);
 		Entity.updateEntities(delta);
 	}
 

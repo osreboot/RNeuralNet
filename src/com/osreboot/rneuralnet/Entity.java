@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
 
-import com.osreboot.ridhvl.action.HvlAction2;
 import com.osreboot.ridhvl.template.HvlTemplateInteg2D;
 
 public class Entity {
@@ -19,7 +18,7 @@ public class Entity {
 	
 	private float x, y, xs, ys, radius;
 	private Color color;
-	private HvlAction2<Float, Entity> actionUpdate;
+	private NeuralNetwork network;
 	
 	public Entity(float xArg, float yArg, float radiusArg, Color colorArg){
 		x = xArg;
@@ -32,20 +31,20 @@ public class Entity {
 	}
 	
 	public void update(float delta){
-		if(actionUpdate != null) actionUpdate.run(delta, this);
+		if(network != null) network.update(delta);
 		x += xs * delta;
 		y += ys * delta;
 		x = Math.max(Math.min(200, x), -200);
 		y = Math.max(Math.min(200, y), -200);
 		hvlDrawQuadc(x, y, radius * 2, radius * 2, HvlTemplateInteg2D.getTexture(Main.IDX_ENTITY), color);
 	}
-	
-	public HvlAction2<Float, Entity> getActionUpdate(){
-		return actionUpdate;
+
+	public NeuralNetwork getNetwork(){
+		return network;
 	}
 
-	public void setActionUpdate(HvlAction2<Float, Entity> actionUpdate){
-		this.actionUpdate = actionUpdate;
+	public void setNetwork(NeuralNetwork network){
+		this.network = network;
 	}
 
 	public Color getColor(){
