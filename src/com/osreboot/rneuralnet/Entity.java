@@ -34,8 +34,8 @@ public class Entity {
 		if(network != null) network.update(delta);
 		x += xs * delta;
 		y += ys * delta;
-		x = Math.max(Math.min(200, x), -200);
-		y = Math.max(Math.min(200, y), -200);
+		x = Math.max(Math.min(Main.sim.getBoundarySize(), x), -Main.sim.getBoundarySize());
+		y = Math.max(Math.min(Main.sim.getBoundarySize(), y), -Main.sim.getBoundarySize());
 		hvlDrawQuadc(x, y, radius * 2, radius * 2, HvlTemplateInteg2D.getTexture(Main.IDX_ENTITY), color);
 	}
 

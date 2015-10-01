@@ -6,4 +6,6 @@ public interface Simulation {
 	
 	public void update(float delta);
 	
+	public float getBoundarySize();
+	
 }
