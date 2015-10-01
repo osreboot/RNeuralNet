@@ -6,11 +6,10 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
 import com.osreboot.ridhvl.HvlFontUtil;
-import com.osreboot.ridhvl.display.collection.HvlDisplayModeResizable;
+import com.osreboot.ridhvl.display.collection.HvlDisplayModeDefault;
 import com.osreboot.ridhvl.painter.HvlCamera;
 import com.osreboot.ridhvl.painter.HvlCamera.HvlCameraAlignment;
 import com.osreboot.ridhvl.painter.painter2d.HvlFontPainter2D;
-import com.osreboot.ridhvl.painter.painter2d.HvlPainter2D;
 import com.osreboot.ridhvl.template.HvlTemplateInteg2D;
 
 public class Main extends HvlTemplateInteg2D{
@@ -20,7 +19,7 @@ public class Main extends HvlTemplateInteg2D{
 	}
 	
 	public Main(){
-		super(120, 1280, 720, "RNeuralNet - Neural Network / AI Testing", new HvlDisplayModeResizable());
+		super(120, 1280, 720, "RNeuralNet - Neural Network / AI Testing", new HvlDisplayModeDefault());
 	}
 
 	public static final int IDX_FONT = 0, IDX_ENTITY = 1, IDX_NODE = 2;

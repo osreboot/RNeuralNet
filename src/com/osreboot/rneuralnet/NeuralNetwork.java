@@ -17,8 +17,7 @@ public class NeuralNetwork {
 			DRAWING_VSPACE = 80,
 			DRAWING_SIZE = 20,
 			DRAWING_STIM_MAG = 0.1f,
-			MODIFIER_LIMIT = 10,
-			BENCHMARK_LIFE = 2f;
+			MODIFIER_LIMIT = 10;
 
 	private boolean drawing = false;
 	private Entity parent;
@@ -47,6 +46,7 @@ public class NeuralNetwork {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void update(float delta){
 		for(int y = 0; y < layerLength; y++){
 			for(Neuron n : layers.keySet()){
@@ -60,7 +60,7 @@ public class NeuralNetwork {
 								float nix = (Display.getWidth()*DRAWING_PAN) + (-getNeurons(y - 1).size()*DRAWING_HSPACE/2) + (getNeurons(y - 1).indexOf(ni)*DRAWING_HSPACE);
 								float niy = (-layerLength*DRAWING_VSPACE/2) + ((y - 1)*DRAWING_VSPACE);
 								hvlForceRefresh();
-								hvlDrawLine(nx, ny, nix, niy, new Color(((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG, ((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG, 0f));
+								hvlDrawLine(nx, ny, nix, niy, new Color((((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG)/2 + 0.5f, (((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG)/2 + 0.5f, 0f));
 							}
 						}
 						hvlDrawQuadc(nx, ny, DRAWING_SIZE, DRAWING_SIZE, HvlTemplateInteg2D.getTexture(Main.IDX_NODE),
@@ -153,7 +153,7 @@ public class NeuralNetwork {
 				bestBenchmark.close(inputs, networkArg);
 			}
 			if(tempBenchmark == null) tempBenchmark = new NeuronBenchmark(inputs, networkArg);
-			if(benchmarkLife > BENCHMARK_LIFE){
+			if(benchmarkLife > Main.sim.getBenchmarkLife()){
 				benchmarkLife = 0;
 				tempBenchmark.close(inputs, networkArg);
 				System.out.println("Benchmark is now " + tempBenchmark.getGain());
@@ -168,7 +168,7 @@ public class NeuralNetwork {
 			
 			for(Neuron n : inputs.keySet()) inputs.put(n, (float)(Math.max(Math.min(inputs.get(n) + ((Math.random() - 0.5) * networkArg.getStimulation() * delta), MODIFIER_LIMIT), -MODIFIER_LIMIT)));
 			float total = 0;
-			for(Neuron n : inputs.keySet()) total += inputs.get(n);
+			for(Neuron n : inputs.keySet()) total += n.getDataValue() * inputs.get(n);
 			return total;
 		}
 
@@ -200,6 +200,7 @@ public class NeuralNetwork {
 			return inputSaved;
 		}
 		
+		@SuppressWarnings("unused")
 		public HashMap<Neuron, Float> getInputGain(){
 			return inputGain;
 		}

@@ -6,9 +6,8 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
 import com.osreboot.ridhvl.HvlCoord;
-import com.osreboot.ridhvl.HvlMath;
 
-public class SimulationBasic implements Simulation{
+public class SimulationChase implements Simulation{
 
 	private Entity entitySubject;
 
@@ -19,7 +18,7 @@ public class SimulationBasic implements Simulation{
 	
 	@Override
 	public float getBenchmarkLife(){
-		return 4f;
+		return 1f;
 	}
 	
 	@Override
@@ -42,36 +41,31 @@ public class SimulationBasic implements Simulation{
 					},
 				}, 
 				//***************HIDDEN***************//
-				NeuralNetwork.generateBlankNeuralSet(10),
-				NeuralNetwork.generateBlankNeuralSet(10),
-				NeuralNetwork.generateBlankNeuralSet(10),
-				NeuralNetwork.generateBlankNeuralSet(10),
-				NeuralNetwork.generateBlankNeuralSet(10),
-				NeuralNetwork.generateBlankNeuralSet(10),
+				//NeuralNetwork.generateBlankNeuralSet(4),
 				//***************OUTPUTS***************//
 				{
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setX(networkArg.getParent().getX() + (30 * delta));
+							networkArg.getParent().setX(networkArg.getParent().getX() + (60 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setX(networkArg.getParent().getX() - (30 * delta));
+							networkArg.getParent().setX(networkArg.getParent().getX() - (60 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setY(networkArg.getParent().getY() + (30 * delta));
+							networkArg.getParent().setY(networkArg.getParent().getY() + (60 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setY(networkArg.getParent().getY() - (30 * delta));
+							networkArg.getParent().setY(networkArg.getParent().getY() - (60 * delta));
 						}
 					},
 				}, 
@@ -82,10 +76,11 @@ public class SimulationBasic implements Simulation{
 	@Override
 	public void update(float delta){
 		HvlCoord goal = new HvlCoord(0, 0);
-		entitySubject.getNetwork().setStimulation((float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.0f)/5);
+		//entitySubject.getNetwork().setStimulation((float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.0f)/5);
+		entitySubject.getNetwork().setStimulation(100);
 		hvlDrawLine(goal.x + 20, goal.y + 20, goal.x - 20, goal.y - 20, Color.blue);
 		hvlDrawLine(goal.x + 20, goal.y - 20, goal.x - 20, goal.y + 20, Color.blue);
-		Main.font.drawWord("distance " + Math.round(entitySubject.getNetwork().getStimulation()), -Display.getWidth()/2, (-Display.getHeight()/2) + 14.4f, 0.1f, Color.white);
+		Main.font.drawWord("stimulation " + Math.round(entitySubject.getNetwork().getStimulation()), -Display.getWidth()/2, (-Display.getHeight()/2) + 14.4f, 0.1f, Color.white);
 	}
 
 }
