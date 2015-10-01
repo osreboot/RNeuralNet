@@ -16,7 +16,8 @@ public class NeuralNetwork {
 			DRAWING_HSPACE = 30,
 			DRAWING_VSPACE = 80,
 			DRAWING_SIZE = 20,
-			DRAWING_STIM_MAG = 0.1f;
+			DRAWING_STIM_MAG = 0.1f,
+			MODIFIER_LIMIT = 10;
 
 	private boolean drawing = false;
 	private Entity parent;
@@ -143,7 +144,7 @@ public class NeuralNetwork {
 
 		@Override
 		public float fetchValue(float delta, NeuralNetwork networkArg){
-			for(Neuron n : inputs.keySet()) inputs.put(n, (float)(inputs.get(n) + ((Math.random() - 0.5) * networkArg.getStimulation() * delta)));
+			for(Neuron n : inputs.keySet()) inputs.put(n, (float)(Math.max(Math.min(inputs.get(n) + ((Math.random() - 0.5) * networkArg.getStimulation() * delta), MODIFIER_LIMIT), -MODIFIER_LIMIT)));
 			float total = 0;
 			for(Neuron n : inputs.keySet()) total += inputs.get(n);
 			return total;
@@ -168,7 +169,7 @@ public class NeuralNetwork {
 		public abstract void performAction(float delta, NeuralNetwork networkArg);//TODO add arguments for amplification[~PWM]
 
 		public boolean isTriggering(){
-			return getDataValue() > 1;
+			return getDataValue() > 0;
 		}
 		
 	}

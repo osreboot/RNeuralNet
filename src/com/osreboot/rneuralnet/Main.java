@@ -5,9 +5,11 @@ import static com.osreboot.ridhvl.painter.painter2d.HvlPainter2D.*;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
+import com.osreboot.ridhvl.HvlFontUtil;
 import com.osreboot.ridhvl.display.collection.HvlDisplayModeResizable;
 import com.osreboot.ridhvl.painter.HvlCamera;
 import com.osreboot.ridhvl.painter.HvlCamera.HvlCameraAlignment;
+import com.osreboot.ridhvl.painter.painter2d.HvlFontPainter2D;
 import com.osreboot.ridhvl.painter.painter2d.HvlPainter2D;
 import com.osreboot.ridhvl.template.HvlTemplateInteg2D;
 
@@ -22,7 +24,7 @@ public class Main extends HvlTemplateInteg2D{
 	}
 
 	public static final int IDX_FONT = 0, IDX_ENTITY = 1, IDX_NODE = 2;
-	
+	public static HvlFontPainter2D font;
 	public static Simulation sim;
 	
 	@Override
@@ -30,6 +32,8 @@ public class Main extends HvlTemplateInteg2D{
 		getTextureLoader().loadResource("Font");
 		getTextureLoader().loadResource("Entity");
 		getTextureLoader().loadResource("Node");
+		
+		font = new HvlFontPainter2D(getTextureLoader().getResource(IDX_FONT), HvlFontUtil.DEFAULT, 2048, 2048, 112, 144, 18);
 		
 		HvlCamera.setAlignment(HvlCameraAlignment.CENTER);
 		
@@ -42,11 +46,16 @@ public class Main extends HvlTemplateInteg2D{
 	public void update(float delta){
 		hvlDrawQuadc(0, 0, Display.getWidth(), Display.getWidth(), new Color(0.1f, 0.1f, 0.1f));
 		sim.update(delta);
+		drawBoundary();
+		Entity.updateEntities(delta);
+		font.drawWord("lifetime seconds " + Math.round(getTimer().getTotalTime()*1000)/1000, -Display.getWidth()/2, -Display.getHeight()/2, 0.1f, Color.white);
+	}
+	
+	private void drawBoundary(){
 		hvlDrawLine(sim.getBoundarySize(), sim.getBoundarySize(), -sim.getBoundarySize(), sim.getBoundarySize(), Color.black, 2);//TODO temp
 		hvlDrawLine(sim.getBoundarySize(), sim.getBoundarySize(), sim.getBoundarySize(), -sim.getBoundarySize(), Color.black, 2);
 		hvlDrawLine(-sim.getBoundarySize(), -sim.getBoundarySize(), -sim.getBoundarySize(), sim.getBoundarySize(), Color.black, 2);
 		hvlDrawLine(-sim.getBoundarySize(), -sim.getBoundarySize(), sim.getBoundarySize(), -sim.getBoundarySize(), Color.black, 2);
-		Entity.updateEntities(delta);
 	}
 
 }
