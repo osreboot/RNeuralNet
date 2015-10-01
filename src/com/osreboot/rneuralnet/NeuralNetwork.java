@@ -17,7 +17,8 @@ public class NeuralNetwork {
 			DRAWING_VSPACE = 80,
 			DRAWING_SIZE = 20,
 			DRAWING_STIM_MAG = 0.1f,
-			MODIFIER_LIMIT = 10;
+			MODIFIER_LIMIT = 10,
+			BENCHMARK_LIFE = 2f;
 
 	private boolean drawing = false;
 	private Entity parent;
@@ -135,6 +136,8 @@ public class NeuralNetwork {
 	public static class Hidden extends Neuron{
 
 		private HashMap<Neuron, Float> inputs = new HashMap<>();
+		private float benchmarkLife;
+		private NeuronBenchmark bestBenchmark, tempBenchmark;
 
 		public Hidden(){}
 
@@ -144,6 +147,25 @@ public class NeuralNetwork {
 
 		@Override
 		public float fetchValue(float delta, NeuralNetwork networkArg){
+			benchmarkLife += delta;
+			if(bestBenchmark == null){
+				bestBenchmark = new NeuronBenchmark(inputs, networkArg);
+				bestBenchmark.close(inputs, networkArg);
+			}
+			if(tempBenchmark == null) tempBenchmark = new NeuronBenchmark(inputs, networkArg);
+			if(benchmarkLife > BENCHMARK_LIFE){
+				benchmarkLife = 0;
+				tempBenchmark.close(inputs, networkArg);
+				System.out.println("Benchmark is now " + tempBenchmark.getGain());
+				if(tempBenchmark.getGain() <= 0){
+					bestBenchmark = tempBenchmark;
+					System.out.println("Benchmark gained " + bestBenchmark.getGain());
+				}else{
+					for(Neuron n : inputs.keySet()) inputs.put(n, bestBenchmark.getInputSaved().get(n));
+				}
+				tempBenchmark = null;
+			}
+			
 			for(Neuron n : inputs.keySet()) inputs.put(n, (float)(Math.max(Math.min(inputs.get(n) + ((Math.random() - 0.5) * networkArg.getStimulation() * delta), MODIFIER_LIMIT), -MODIFIER_LIMIT)));
 			float total = 0;
 			for(Neuron n : inputs.keySet()) total += inputs.get(n);
@@ -154,6 +176,38 @@ public class NeuralNetwork {
 			return inputs.get(neuronArg);
 		}
 
+	}
+	
+	private static class NeuronBenchmark{
+		
+		private HashMap<Neuron, Float> inputSaved = new HashMap<>(), inputGain = new HashMap<>(), temp = new HashMap<>();
+		private float gain, tempGain;
+		
+		public NeuronBenchmark(HashMap<Neuron, Float> openArg, NeuralNetwork networkArg){
+			temp = openArg;
+			tempGain = networkArg.getStimulation();
+		}
+		
+		public void close(HashMap<Neuron, Float> closeArg, NeuralNetwork networkArg){
+			for(Neuron n : temp.keySet()){
+				inputSaved.put(n, temp.get(n));
+				inputGain.put(n, closeArg.get(n) - temp.get(n));
+			}
+			gain = networkArg.getStimulation() - tempGain;
+		}
+
+		public HashMap<Neuron, Float> getInputSaved(){
+			return inputSaved;
+		}
+		
+		public HashMap<Neuron, Float> getInputGain(){
+			return inputGain;
+		}
+
+		public float getGain(){
+			return gain;
+		}
+		
 	}
 
 	public static abstract class Output extends Hidden{

@@ -43,25 +43,25 @@ public class SimulationBasic implements Simulation{
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setX(networkArg.getParent().getX() + (20 * delta));
+							networkArg.getParent().setX(networkArg.getParent().getX() + (30 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setX(networkArg.getParent().getX() - (20 * delta));
+							networkArg.getParent().setX(networkArg.getParent().getX() - (30 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setY(networkArg.getParent().getY() + (20 * delta));
+							networkArg.getParent().setY(networkArg.getParent().getY() + (30 * delta));
 						}
 					},
 					new NeuralNetwork.Output(){
 						@Override
 						public void performAction(float delta, NeuralNetwork networkArg){
-							networkArg.getParent().setY(networkArg.getParent().getY() - (20 * delta));
+							networkArg.getParent().setY(networkArg.getParent().getY() - (30 * delta));
 						}
 					},
 				}, 
@@ -72,10 +72,10 @@ public class SimulationBasic implements Simulation{
 	@Override
 	public void update(float delta){
 		HvlCoord goal = new HvlCoord(0, 0);
-		entitySubject.getNetwork().setStimulation((float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.1f)/20);
+		entitySubject.getNetwork().setStimulation((float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.0f)/10);
 		hvlDrawLine(goal.x + 20, goal.y + 20, goal.x - 20, goal.y - 20, Color.blue);
 		hvlDrawLine(goal.x + 20, goal.y - 20, goal.x - 20, goal.y + 20, Color.blue);
-		Main.font.drawWord("pain " + Math.round(entitySubject.getNetwork().getStimulation()), -Display.getWidth()/2, (-Display.getHeight()/2) + 14.4f, 0.1f, Color.white);
+		Main.font.drawWord("distance " + Math.round(entitySubject.getNetwork().getStimulation()), -Display.getWidth()/2, (-Display.getHeight()/2) + 14.4f, 0.1f, Color.white);
 	}
 
 }
