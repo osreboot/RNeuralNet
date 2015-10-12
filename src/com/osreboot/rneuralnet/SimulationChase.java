@@ -6,10 +6,15 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
 import com.osreboot.ridhvl.HvlCoord;
+import com.osreboot.ridhvl.HvlMath;
 
 public class SimulationChase implements Simulation{
 
+	public static final float GOAL_SWAP_TIME = 8;
+	
 	private Entity entitySubject;
+	private float goalElapsed = GOAL_SWAP_TIME, pain;
+	private HvlCoord goal = new HvlCoord(0, 0);
 
 	@Override
 	public float getBoundarySize(){
@@ -18,7 +23,7 @@ public class SimulationChase implements Simulation{
 	
 	@Override
 	public float getBenchmarkLife(){
-		return 1f;
+		return Integer.MAX_VALUE;
 	}
 	
 	@Override
@@ -30,18 +35,24 @@ public class SimulationChase implements Simulation{
 					new NeuralNetwork.Sensor(){
 						@Override
 						public float fetchValue(float deltaArg, NeuralNetwork networkArg) {
-							return networkArg.getParent().getX();
+							return goal.x - networkArg.getParent().getX();
 						}
 					},
 					new NeuralNetwork.Sensor(){
 						@Override
 						public float fetchValue(float deltaArg, NeuralNetwork networkArg) {
-							return networkArg.getParent().getY();
+							return goal.y - networkArg.getParent().getY();
+						}
+					},
+					new NeuralNetwork.Sensor(){
+						@Override
+						public float fetchValue(float deltaArg, NeuralNetwork networkArg) {
+							return networkArg.getParent().getX() + getBoundarySize();
 						}
 					},
 				}, 
 				//***************HIDDEN***************//
-				//NeuralNetwork.generateBlankNeuralSet(4),
+				//NeuralNetwork.generateBlankNeuralSet(3),
 				//***************OUTPUTS***************//
 				{
 					new NeuralNetwork.Output(){
@@ -75,9 +86,14 @@ public class SimulationChase implements Simulation{
 
 	@Override
 	public void update(float delta){
-		HvlCoord goal = new HvlCoord(0, 0);
-		//entitySubject.getNetwork().setStimulation((float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.0f)/5);
-		entitySubject.getNetwork().setStimulation(100);
+		pain = Math.max(pain - (delta/1.6f), 0);
+		goalElapsed += delta;
+		if(goalElapsed > GOAL_SWAP_TIME){
+			goalElapsed = 0;
+			pain = (float)Math.pow((HvlMath.distance(goal.x, goal.y, entitySubject.getX(), entitySubject.getY())), 1.0f)/300;
+			goal = new HvlCoord((float)Math.random() * (getBoundarySize() * 2) - getBoundarySize(), (float)Math.random() * (getBoundarySize() * 2) - getBoundarySize());
+		}
+		entitySubject.getNetwork().setStimulation(pain * 100);
 		hvlDrawLine(goal.x + 20, goal.y + 20, goal.x - 20, goal.y - 20, Color.blue);
 		hvlDrawLine(goal.x + 20, goal.y - 20, goal.x - 20, goal.y + 20, Color.blue);
 		Main.font.drawWord("stimulation " + Math.round(entitySubject.getNetwork().getStimulation()), -Display.getWidth()/2, (-Display.getHeight()/2) + 14.4f, 0.1f, Color.white);

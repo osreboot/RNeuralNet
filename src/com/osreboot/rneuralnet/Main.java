@@ -36,14 +36,14 @@ public class Main extends HvlTemplateInteg2D{
 		
 		HvlCamera.setAlignment(HvlCameraAlignment.CENTER);
 		
-		sim = new SimulationBasic();
+		sim = new SimulationChase();
 		
 		sim.initialize();
 	}
 
 	@Override
 	public void update(float delta){
-		hvlDrawQuadc(0, 0, Display.getWidth(), Display.getWidth(), new Color(0.1f, 0.1f, 0.1f));
+		hvlDrawQuadc(0, 0, Display.getWidth(), Display.getWidth(), new Color(0.2f, 0.2f, 0.2f));
 		sim.update(delta);
 		drawBoundary();
 		Entity.updateEntities(delta);

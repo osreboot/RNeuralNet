@@ -16,7 +16,6 @@ public class NeuralNetwork {
 			DRAWING_HSPACE = 30,
 			DRAWING_VSPACE = 80,
 			DRAWING_SIZE = 20,
-			DRAWING_STIM_MAG = 0.1f,
 			MODIFIER_LIMIT = 10;
 
 	private boolean drawing = false;
@@ -60,7 +59,7 @@ public class NeuralNetwork {
 								float nix = (Display.getWidth()*DRAWING_PAN) + (-getNeurons(y - 1).size()*DRAWING_HSPACE/2) + (getNeurons(y - 1).indexOf(ni)*DRAWING_HSPACE);
 								float niy = (-layerLength*DRAWING_VSPACE/2) + ((y - 1)*DRAWING_VSPACE);
 								hvlForceRefresh();
-								hvlDrawLine(nx, ny, nix, niy, new Color((((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG)/2 + 0.5f, (((Hidden)n).getWeight(ni)*DRAWING_STIM_MAG)/2 + 0.5f, 0f));
+								hvlDrawLine(nx, ny, nix, niy, new Color((((Hidden)n).getWeight(ni)/MODIFIER_LIMIT) + 0.5f, (((Hidden)n).getWeight(ni)/MODIFIER_LIMIT) + 0.5f, 0f));
 							}
 						}
 						hvlDrawQuadc(nx, ny, DRAWING_SIZE, DRAWING_SIZE, HvlTemplateInteg2D.getTexture(Main.IDX_NODE),
